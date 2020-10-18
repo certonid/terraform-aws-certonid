@@ -1,2 +1,2 @@
-# certonid-aws-terraform
-Certonid AWS module for Terraform
+# Terraform AWS Certonid Module
+
