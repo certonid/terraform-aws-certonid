@@ -1,68 +1,74 @@
 variable "regions" {
-  type = set(string)
+  type        = set(string)
   description = "AWS lambda regions."
-  default = []
+  default     = []
 
   validation {
     condition     = length(var.regions) > 0
-    error_message = "The `regions` value must have at least one region in list."
+    error_message = "The `regions` value must have at least one region in a list."
   }
 }
 
 variable "function_zip_file" {
   type        = string
   description = "Location for certonid serverless archive."
-  default = ""
+  default     = ""
 
   validation {
-    condition     = length(var.function_file) > 0
-    error_message = "The `function_file` value must be provided."
+    condition     = length(var.function_zip_file) > 0
+    error_message = "The `function_zip_file` value must be provided."
   }
 }
 
 variable "function_name" {
-  type = string
+  type        = string
   description = "AWS lambda function name."
-  default = "CertonidCertificateGenerator"
+  default     = "CertonidCertificateGenerator"
+}
+
+variable "function_handler" {
+  type        = string
+  description = "AWS lambda function handler."
+  default     = "serverless"
 }
 
 variable "function_iam_role" {
-  type = string
+  type        = string
   description = "AWS lambda function IAM role."
-  default = "certonid-lambda-role"
+  default     = "certonid-lambda-role"
 }
 
 variable "symmetric_encryption_key" {
-  type = string
+  type        = string
   description = "Key, which is used as CERTONID_SYMMETRIC_KEY for certonid."
-  default = ""
+  default     = ""
 }
 
 variable "ca_key_kms_alias" {
-  type = string
+  type        = string
   description = "KMS alias key name, which is used by CA encrypted certificate."
-  default = "certonid-ca-key"
+  default     = "certonid-ca-key"
 }
 
 variable "is_ca_kms_generated" {
-  type = bool
+  type        = bool
   description = "Inform, that KMS key already generated."
-  default = false
+  default     = false
 }
 
 variable "ca_key_kms_generated_arn" {
-  type = string
+  type        = string
   description = "KMS arn, which is used to identify generated key."
 }
 
-variable "clients_iam_role" {
-  type = string
-  description = "AWS lambda clients IAM role."
-  default = "certonid-clients-role"
+variable "clients_iam_group" {
+  type        = string
+  description = "AWS lambda clients IAM group."
+  default     = "certonid-clients-role"
 }
 
 variable "clients_names" {
-  type = set(string)
-  description = "AWS clients, which attached to `clients_iam_role` IAM role to access certonid serverless function."
-  default = []
+  type        = set(string)
+  description = "AWS clients, which attached to `clients_iam_group` IAM role to access certonid serverless function."
+  default     = []
 }
