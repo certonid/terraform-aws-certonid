@@ -95,8 +95,11 @@ resource "aws_iam_group_policy" "group_for_clients" {
 EOF
 }
 
-resource "aws_iam_group_membership" "group_for_clients" {
-  name  = var.clients_iam_group
-  users = var.clients_names
-  group = aws_iam_group.group_for_clients.name
+resource "aws_iam_user_group_membership" "group_for_clients" {
+  for_each = var.clients_names
+  user     = each.key
+
+  groups = [
+    aws_iam_group.group_for_clients.name
+  ]
 }
