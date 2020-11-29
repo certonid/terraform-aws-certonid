@@ -19,7 +19,7 @@ data "archive_file" "serverless_function" {
 }
 
 module "terraform-aws-certonid-eu-central-1" {
-  source = "terraform-aws-certonid"
+  source = "certonid/certonid/aws"
 
   function_zip_file = data.archive_file.serverless_function.output_path
 
@@ -75,7 +75,7 @@ data "archive_file" "serverless_function_us-east-1" {
 }
 
 module "terraform-aws-certonid-eu-central-1" {
-  source = "terraform-aws-certonid"
+  source = "certonid/certonid/aws"
 
   providers = {
     aws = aws
@@ -92,7 +92,7 @@ module "terraform-aws-certonid-eu-central-1" {
 }
 
 module "terraform-aws-certonid-us-east-1" {
-  source = "terraform-aws-certonid"
+  source = "certonid/certonid/aws"
 
   providers = {
     aws = aws.useast1
@@ -155,7 +155,7 @@ data "archive_file" "serverless_function_us-east-1" {
 }
 
 module "terraform-aws-certonid-eu-central-1" {
-  source = "./../terraform-aws-certonid"
+  source = "certonid/certonid/aws"
 
   providers = {
     aws = aws
@@ -174,7 +174,7 @@ module "terraform-aws-certonid-eu-central-1" {
 }
 
 module "terraform-aws-certonid-us-east-1" {
-  source = "./../terraform-aws-certonid"
+  source = "certonid/certonid/aws"
 
   providers = {
     aws = aws.useast1
