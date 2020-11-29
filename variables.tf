@@ -1,18 +1,6 @@
-variable "regions" {
-  type        = set(string)
-  description = "AWS lambda regions."
-  default     = []
-
-  validation {
-    condition     = length(var.regions) > 0
-    error_message = "The `regions` value must have at least one region in a list."
-  }
-}
-
 variable "function_zip_file" {
   type        = string
   description = "Location for certonid serverless archive."
-  default     = ""
 
   validation {
     condition     = length(var.function_zip_file) > 0
@@ -32,10 +20,16 @@ variable "function_handler" {
   default     = "serverless"
 }
 
-variable "function_iam_role" {
+variable "function_iam_role_name" {
   type        = string
   description = "AWS lambda function IAM role."
   default     = "certonid-lambda-role"
+}
+
+variable "function_iam_policy_name" {
+  type        = string
+  description = "AWS lambda function IAM policy."
+  default     = "certonid-lambda-policy"
 }
 
 variable "symmetric_encryption_key" {
@@ -44,31 +38,44 @@ variable "symmetric_encryption_key" {
   default     = ""
 }
 
-variable "ca_key_kms_alias" {
-  type        = string
-  description = "KMS alias key name, which is used by CA encrypted certificate."
-  default     = "certonid-ca-key"
-}
-
-variable "is_ca_kms_generated" {
+variable "is_kmsauth_enabled" {
   type        = bool
-  description = "Inform, that KMS key already generated."
+  description = "Add kmsauth for additional security."
   default     = false
 }
 
-variable "ca_key_kms_generated_arn" {
+variable "kmsauth_service_id" {
   type        = string
-  description = "KMS arn, which is used to identify generated key."
+  description = "Kmsauth service ID."
+  default     = "certonid"
 }
 
-variable "clients_iam_group" {
+variable "function_iam_kmsauth_policy_name" {
+  type        = string
+  description = "AWS kmsauth lambda function IAM policy."
+  default     = "certonid-kmsauth-lambda-policy"
+}
+
+variable "is_group_for_clients_exists" {
+  type        = bool
+  description = "Is IAM group already created."
+  default     = false
+}
+
+variable "clients_iam_group_name" {
   type        = string
   description = "AWS lambda clients IAM group."
   default     = "certonid-clients-role"
 }
 
+variable "clients_iam_policy_name" {
+  type        = string
+  description = "AWS lambda function IAM role."
+  default     = "certonid-clients-policy"
+}
+
 variable "clients_names" {
   type        = set(string)
-  description = "AWS clients, which attached to `clients_iam_group` IAM role to access certonid serverless function."
+  description = "AWS clients, which attached to `clients_iam_group_name` IAM role to access certonid serverless function."
   default     = []
 }

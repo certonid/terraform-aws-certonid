@@ -1,9 +1,13 @@
 output "ca_kms_arn" {
-  value = aws_kms_alias.ca_aws_kms_alias.arn
+  value = aws_kms_key.ca_aws_kms_key.arn
 }
 
-output "function_role_arn" {
-  value = aws_iam_role.aws_iam_role.iam_for_certonid_serverless.arn
+output "kmsauth_kms_arn" {
+  value = var.is_kmsauth_enabled ? aws_kms_key.kmsauth_aws_kms_key[0].arn : ""
+}
+
+output "function_iam_role_arn" {
+  value = aws_iam_role.iam_for_certonid_serverless.arn
 }
 
 output "function_lambda_arn" {
@@ -11,5 +15,5 @@ output "function_lambda_arn" {
 }
 
 output "clients_iam_group_name" {
-  value = aws_iam_group.group_for_clients.name
+  value = var.is_group_for_clients_exists ? var.clients_iam_group_name : aws_iam_group.clients_aws_iam_group[0].name
 }
