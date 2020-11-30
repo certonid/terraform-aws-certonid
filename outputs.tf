@@ -1,5 +1,5 @@
 output "ca_kms_arn" {
-  value = aws_kms_key.ca_aws_kms_key.arn
+  value = length(var.symmetric_encryption_key) > 0 ? "" : aws_kms_key.ca_aws_kms_key[0].arn
 }
 
 output "kmsauth_kms_arn" {

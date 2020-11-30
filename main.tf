@@ -1,13 +1,17 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "ca_aws_kms_key" {
+  count = length(var.symmetric_encryption_key) > 0 ? 0 : 1
+
   description              = "KMS key, which used by ${var.function_name} lambda to generate ssh certificates"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
 }
 
 resource "aws_kms_alias" "ca_aws_kms_alias" {
+  count = length(var.symmetric_encryption_key) > 0 ? 0 : 1
+
   name          = "alias/certonid-ca-key"
-  target_key_id = aws_kms_key.ca_aws_kms_key.key_id
+  target_key_id = aws_kms_key.ca_aws_kms_key[0].key_id
 }
 
 resource "aws_kms_key" "kmsauth_aws_kms_key" {
@@ -43,8 +47,8 @@ resource "aws_iam_role" "iam_for_certonid_serverless" {
 EOF
 }
 
-resource "aws_iam_role_policy" "iam_for_certonid_serverless" {
-  name   = var.function_iam_policy_name
+resource "aws_iam_role_policy" "iam_for_general_certonid_serverless" {
+  name   = var.function_iam_general_policy_name
   role   = aws_iam_role.iam_for_certonid_serverless.id
   policy = <<EOF
 {
@@ -61,7 +65,21 @@ resource "aws_iam_role_policy" "iam_for_certonid_serverless" {
             "Resource": [
                 "*"
             ]
-        },
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "iam_for_kms_certonid_serverless" {
+  count = length(var.symmetric_encryption_key) > 0 ? 0 : 1
+
+  name   = var.function_iam_kms_policy_name
+  role   = aws_iam_role.iam_for_certonid_serverless.id
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
         {
             "Sid": "AllowKMSDecryption",
             "Effect": "Allow",
@@ -70,7 +88,7 @@ resource "aws_iam_role_policy" "iam_for_certonid_serverless" {
                 "kms:DescribeKey"
             ],
             "Resource": [
-                "${aws_kms_key.ca_aws_kms_key.arn}"
+                "${aws_kms_key.ca_aws_kms_key[0].arn}"
             ]
         }
     ]
@@ -186,7 +204,8 @@ resource "aws_iam_group_policy" "clients_aws_iam_kmsauth_policy" {
           "kms:EncryptionContext:to": "${var.kmsauth_service_id}",
           "kms:EncryptionContext:user_type": "user",
           "kms:EncryptionContext:from": "$${aws:username}"
-        }
+        },
+        ${var.kmsauth_aws_additional_conditions}
       }
     }
   ]

@@ -26,10 +26,16 @@ variable "function_iam_role_name" {
   default     = "certonid-lambda-role"
 }
 
-variable "function_iam_policy_name" {
+variable "function_iam_general_policy_name" {
   type        = string
-  description = "AWS lambda function IAM policy."
+  description = "AWS lambda function general IAM policy."
   default     = "certonid-lambda-policy"
+}
+
+variable "function_iam_kms_policy_name" {
+  type        = string
+  description = "AWS lambda function KMS IAM policy."
+  default     = "certonid-lambda-kms-policy"
 }
 
 variable "symmetric_encryption_key" {
@@ -48,6 +54,12 @@ variable "kmsauth_service_id" {
   type        = string
   description = "Kmsauth service ID."
   default     = "certonid"
+}
+
+variable "kmsauth_aws_additional_conditions" {
+  type        = string
+  description = "Kmsauth AWS additional conditions."
+  default     = ""
 }
 
 variable "function_iam_kmsauth_policy_name" {

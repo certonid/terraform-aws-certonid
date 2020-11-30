@@ -1,6 +1,52 @@
 # [Terraform AWS Certonid Module](https://registry.terraform.io/modules/certonid/certonid/aws/latest)
 
-## How to create one certonid function
+## How to generate certonid function with symmetric encryption (not using AWS KMS keys)
+
+```terraform
+terraform {
+  required_version = ">= 0.12"
+}
+
+provider "aws" {
+  region = "eu-central-1"
+}
+provider "archive" {}
+
+data "archive_file" "serverless_function" {
+  type        = "zip"
+  source_dir  = "./serverless/"
+  output_path = "./build/serverless.zip"
+}
+
+module "terraform-aws-certonid-symmetric" {
+  source = "certonid/certonid/aws"
+
+  function_zip_file = data.archive_file.serverless_function.output_path
+  symmetric_encryption_key = "<use 'certonid randstr' to generate>"
+
+  clients_names = [
+    "users name 1",
+    "users name 2"
+  ]
+}
+```
+
+#### Cli config
+
+```yml
+certificates:
+  yourcoolname:
+    public_key_path: ~/.ssh/id_ed25519.pub
+    username: <your aws user name>
+    runner: aws
+    valid_until: 2h
+    aws:
+      profile: <your aws profile>
+      region: eu-central-1
+      function_name: CertonidCertificateGenerator
+```
+
+## How to create one certonid function with AWS KMS encryption
 
 ```terraform
 terraform {
@@ -44,7 +90,7 @@ certificates:
       function_name: CertonidCertificateGenerator
 ```
 
-## How to create multi region certonid functions (eu-central-1 and us-east-1 in example)
+## How to create multi region certonid functions (with AWS KMS encryption, eu-central-1 and us-east-1 in example)
 
 ```terraform
 terraform {
@@ -83,7 +129,8 @@ module "terraform-aws-certonid-eu-central-1" {
 
   function_zip_file = data.archive_file.serverless_function_eu-central-1.output_path
   function_iam_role_name = "certonid-lambda-role-eu-central-1"
-  function_iam_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
   clients_iam_policy_name = "certonid-clients-policy-eu-central-1"
 
   clients_names = [
@@ -100,7 +147,8 @@ module "terraform-aws-certonid-us-east-1" {
 
   function_zip_file = data.archive_file.serverless_function_us-east-1.output_path
   function_iam_role_name = "certonid-lambda-role-us-east-1"
-  function_iam_policy_name = "certonid-lambda-policy-us-east-1"
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
   clients_iam_policy_name = "certonid-clients-policy-us-east-1"
 
   is_group_for_clients_exists = true
@@ -124,7 +172,7 @@ certificates:
     - region: us-east-1
 ```
 
-## How to create multi region certonid functions with kmsauth (eu-central-1 and us-east-1 in example)
+## How to create multi region certonid functions with kmsauth (with AWS KMS encryption, eu-central-1 and us-east-1 in example)
 
 ```terraform
 terraform {
@@ -163,8 +211,10 @@ module "terraform-aws-certonid-eu-central-1" {
 
   function_zip_file = data.archive_file.serverless_function_eu-central-1.output_path
   function_iam_role_name = "certonid-lambda-role-eu-central-1"
-  function_iam_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
   clients_iam_policy_name = "certonid-clients-policy-eu-central-1"
+
   is_kmsauth_enabled = true
   function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-eu-central-1"
 
@@ -182,8 +232,10 @@ module "terraform-aws-certonid-us-east-1" {
 
   function_zip_file = data.archive_file.serverless_function_us-east-1.output_path
   function_iam_role_name = "certonid-lambda-role-us-east-1"
-  function_iam_policy_name = "certonid-lambda-policy-us-east-1"
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
   clients_iam_policy_name = "certonid-clients-policy-us-east-1"
+
   is_kmsauth_enabled = true
   function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-us-east-1"
 
