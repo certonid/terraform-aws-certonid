@@ -22,7 +22,7 @@ module "terraform-aws-certonid-symmetric" {
   source = "certonid/certonid/aws"
 
   function_zip_file = data.archive_file.serverless_function.output_path
-  symmetric_encryption_key = "<use 'certonid randstr' to generate>"
+  symmetric_encryption_key = "<use 'certonid randstr' to generate one>"
 
   clients_names = [
     "users name 1",
@@ -128,10 +128,10 @@ module "terraform-aws-certonid-eu-central-1" {
   }
 
   function_zip_file = data.archive_file.serverless_function_eu-central-1.output_path
-  function_iam_role_name = "certonid-lambda-role-eu-central-1"
-  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
-  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
-  clients_iam_policy_name = "certonid-clients-policy-eu-central-1"
+  function_iam_role_name = "certonid-lambda-role-eu-central-1" # you need provide uniq name for function IAM role
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1" # you need provide uniq name for function general IAM policy
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1" # you need provide uniq name for function KMS IAM policy
+  clients_iam_policy_name = "certonid-clients-policy-eu-central-1" # you need provide uniq name for clients IAM policy
 
   clients_names = [
     "certonid-test-user"
@@ -146,12 +146,12 @@ module "terraform-aws-certonid-us-east-1" {
   }
 
   function_zip_file = data.archive_file.serverless_function_us-east-1.output_path
-  function_iam_role_name = "certonid-lambda-role-us-east-1"
-  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
-  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
-  clients_iam_policy_name = "certonid-clients-policy-us-east-1"
+  function_iam_role_name = "certonid-lambda-role-us-east-1" # you need provide uniq name for function IAM role
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1" # you need provide uniq name for function general IAM policy
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1" # you need provide uniq name for function KMS IAM policy
+  clients_iam_policy_name = "certonid-clients-policy-us-east-1" # you need provide uniq name for clients IAM policy
 
-  is_group_for_clients_exists = true
+  is_group_for_clients_exists = true # users managed in another function by 'clients_names' variable
 }
 ```
 
@@ -210,13 +210,13 @@ module "terraform-aws-certonid-eu-central-1" {
   }
 
   function_zip_file = data.archive_file.serverless_function_eu-central-1.output_path
-  function_iam_role_name = "certonid-lambda-role-eu-central-1"
-  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
-  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
-  clients_iam_policy_name = "certonid-clients-policy-eu-central-1"
+  function_iam_role_name = "certonid-lambda-role-eu-central-1" # you need provide uniq name for function IAM role
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1" # you need provide uniq name for function general IAM policy
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1" # you need provide uniq name for function KMS IAM policy
+  clients_iam_policy_name = "certonid-clients-policy-eu-central-1" # you need provide uniq name for clients IAM policy
 
-  is_kmsauth_enabled = true
-  function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-eu-central-1"
+  is_kmsauth_enabled = true # activate kmsauth
+  function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-eu-central-1" # you need provide uniq name for kmsauth IAM policy
 
   clients_names = [
     "certonid-test-user"
@@ -231,15 +231,15 @@ module "terraform-aws-certonid-us-east-1" {
   }
 
   function_zip_file = data.archive_file.serverless_function_us-east-1.output_path
-  function_iam_role_name = "certonid-lambda-role-us-east-1"
-  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1"
-  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1"
-  clients_iam_policy_name = "certonid-clients-policy-us-east-1"
+  function_iam_role_name = "certonid-lambda-role-us-east-1" # you need provide uniq name for function IAM role
+  function_iam_general_policy_name = "certonid-lambda-policy-eu-central-1" # you need provide uniq name for function general IAM policy
+  function_iam_kms_policy_name = "certonid-lambda-kms-policy-eu-central-1" # you need provide uniq name for function KMS IAM policy
+  clients_iam_policy_name = "certonid-clients-policy-us-east-1" # you need provide uniq name for clients IAM policy
 
-  is_kmsauth_enabled = true
-  function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-us-east-1"
+  is_kmsauth_enabled = true # activate kmsauth
+  function_iam_kmsauth_policy_name = "certonid-kmsauth-lambda-policy-us-east-1" # you need provide uniq name for kmsauth IAM policy
 
-  is_group_for_clients_exists = true
+  is_group_for_clients_exists = true # users managed in another function by 'clients_names' variable
   clients_iam_group_name = module.terraform-aws-certonid-eu-central-1.clients_iam_group_name
 }
 ```
